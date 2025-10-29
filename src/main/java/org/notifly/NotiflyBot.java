@@ -1,6 +1,7 @@
 package org.notifly;
 
 import org.notifly.commands.CommandHandler;
+import org.notifly.commands.ListCommand;
 import org.notifly.commands.StartCommand;
 import org.notifly.config.ConfigLoader;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -12,13 +13,26 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
-    private final String token = ConfigLoader.getToken();
-    private final List<CommandHandler> commandHandlers = List.of(new StartCommand());
-    private final TelegramClient telegramClient = new OkHttpTelegramClient(token);
+    private final String token;
+    private final TelegramClient telegramClient;
+    private List<CommandHandler> commandHandlers = new ArrayList<>();
+
+
+    public NotiflyBot() {
+        this.token = ConfigLoader.getToken();
+        this.telegramClient = new OkHttpTelegramClient(token);
+
+        ListCommand listCommand = new ListCommand(commandHandlers);
+        this.commandHandlers.add(new StartCommand());
+        this.commandHandlers.add(listCommand);
+    }
+
     @Override
     public void consume(Update update) {
         // We check if the update has a message and the message has text
