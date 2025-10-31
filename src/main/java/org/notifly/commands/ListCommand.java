@@ -27,6 +27,9 @@ public class ListCommand implements CommandHandler{
             else if (command instanceof ListCommand){
                 sb.append("/list - показать список всех команд\n");
             }
+            else if(command instanceof AddCommand){
+                sb.append("/add - добавить важное событие для напоминания\n");
+            }
         }
         return sb.toString();
     }
