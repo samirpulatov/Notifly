@@ -5,7 +5,9 @@ import org.notifly.commands.CommandHandler;
 import org.notifly.commands.ListCommand;
 import org.notifly.commands.StartCommand;
 import org.notifly.config.ConfigLoader;
-import org.notifly.states.UserStatus;
+import org.notifly.database.ReminderDAO;
+import org.notifly.dto.UserStatus;
+import org.notifly.services.ReminderScheduler;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,20 +35,32 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
     // List of available command handlers (/start, /add, /list, etc.)
     private List<CommandHandler> commandHandlers = new ArrayList<>();
 
+    private ReminderDAO reminderDAO;
+    private ReminderScheduler reminderScheduler;
+
 
     public NotiflyBot() {
         // Load token from YAML configuration
         this.token = ConfigLoader.getToken();
         this.telegramClient = new OkHttpTelegramClient(token);
 
+
         // Initialize user map
         users = new HashMap<>();
+
 
         // Initialize and register all command handlers
         ListCommand listCommand = new ListCommand(commandHandlers);
         this.commandHandlers.add(new StartCommand());
         this.commandHandlers.add(new AddCommand(this.telegramClient, users));
         this.commandHandlers.add(listCommand);
+
+        this.reminderDAO = new ReminderDAO();
+        this.reminderScheduler = new ReminderScheduler(reminderDAO,telegramClient);
+
+        this.reminderScheduler.start();
+
+
     }
 
     @Override
@@ -63,6 +77,7 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
                 userStatus = new UserStatus();
                 userStatus.setStatus(UserStatus.Status.NONE);
                 users.put(chat_id, userStatus);
+                reminderDAO.saveUser(chat_id);
             }
 
             System.out.println(update.getMessage().getText());
@@ -77,6 +92,7 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
                     LocalDate date = LocalDate.parse(dateText, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                     userStatus.setStatus(UserStatus.Status.AWAITING_DESCRIPTION);
                     message_text = "Дата сохранена: " + date+"✅\nТеперь введите описание. Например: день рождения друга или '-' если описание не нужно.";
+                    userStatus.setSavedDate(date);
                 } catch (DateTimeException e) {
                     // Invalid date format
                     message_text = "Неверный формат! Введите дату в формате dd-MM-yyyy";
@@ -91,6 +107,10 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
                 } else {
                     message_text = "Описание пропущено.";
                 }
+
+                userStatus.setOptionalDescription(descriptionText);
+
+                reminderDAO.saveReminder(chat_id,userStatus.getSavedDate(),userStatus.getOptionalDescription());
 
                 userStatus.setStatus(UserStatus.Status.NONE);
 

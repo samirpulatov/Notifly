@@ -2,11 +2,10 @@ package org.notifly.commands;
 
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
-import org.notifly.states.UserStatus;
+import org.notifly.dto.UserStatus;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor

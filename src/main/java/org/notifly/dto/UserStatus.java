@@ -1,10 +1,9 @@
-package org.notifly.states;
+package org.notifly.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -16,7 +15,7 @@ public class UserStatus {
     }
 
     private Status status = Status.NONE;
-    private LocalDateTime savedDate;
+    private LocalDate savedDate;
     private String optionalDescription;
     private String tempName;
 
