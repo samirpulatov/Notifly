@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
 @Setter
 public class Reminder {
     private long chatId;
-    private LocalDate date;
+    private LocalDateTime date;
     private String description;
 }

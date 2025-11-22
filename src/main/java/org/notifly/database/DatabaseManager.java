@@ -24,7 +24,10 @@ public class DatabaseManager {
             String createUsersTable = """
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    chat_id LONG UNIQUE
+                    chat_id LONG UNIQUE,
+                    username VARCHAR(20),
+                    first_name VARCHAR(20),
+                    last_name VARCHAR(20)
                 );
             """;
 
@@ -35,7 +38,13 @@ public class DatabaseManager {
                     chat_id LONG,
                     date TEXT NOT NULL,
                     description TEXT,
-                    FOREIGN KEY (chat_id) REFERENCES users(chat_id)
+                    first_name VARCHAR(20),
+                    last_name VARCHAR(20),
+                    username VARCHAR(20),
+                    FOREIGN KEY (chat_id) REFERENCES users(chat_id),
+                    FOREIGN KEY (first_name) REFERENCES users(first_name),
+                    FOREIGN KEY (last_name) REFERENCES users(last_name),
+                    FOREIGN KEY (username) REFERENCES users(username)
                 );
             """;
 

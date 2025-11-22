@@ -25,13 +25,13 @@ public class ReminderScheduler {
     public void start() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         System.out.println("Starting reminder scheduler");
-//        scheduledExecutorService.scheduleAtFixedRate(() -> {
-//            try {
-//                checkReminders();  // здесь TelegramApiException будет обработан
-//            } catch (TelegramApiException e) {
-//                e.printStackTrace();
-//            }
-//        }, 0, 24, TimeUnit.HOURS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            try {
+                checkReminders();  // здесь TelegramApiException будет обработан
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.HOURS);
 
 
     }
@@ -44,8 +44,8 @@ public class ReminderScheduler {
         List<Reminder> reminders = reminderDAO.getReminders(today, tommorrow);
         for (Reminder reminder : reminders) {
             String message = reminder.getDate().equals(tommorrow)
-                    ? "\"\uD83D\uDCC5 Напоминание на завтра: \"" +reminder.getDescription()
-                    : "🎉 Напоминание на сегодня: " + reminder.getDescription();
+                    ? "\"\uD83D\uDCC5 Напоминанию Вам о следующем событии на завтра: \"" +reminder.getDescription()
+                    : "Напоминанию Вам о следующем событии на сегодня: " + reminder.getDescription();
 
             telegramClient.execute(
                     SendMessage.builder()

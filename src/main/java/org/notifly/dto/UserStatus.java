@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class UserStatus {
     }
 
     private Status status = Status.NONE;
-    private LocalDate savedDate;
+    private LocalDateTime savedDate;
     private String optionalDescription;
     private String tempName;
 

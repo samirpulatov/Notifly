@@ -10,7 +10,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 public class AddCommand implements CommandHandler{
-    private final TelegramClient telegramClient;
+
     private final Map<Long, UserStatus> users;
 
     @Override
@@ -24,7 +24,8 @@ public class AddCommand implements CommandHandler{
         users.get(chatId).setStatus(UserStatus.Status.AWAITING_DATE);
 
 
-        return EmojiParser.parseToUnicode("Отлично, теперь введите дату для напоминания в следующем формате: "+"25-10-2025");
+        return EmojiParser.parseToUnicode("Отлично! Теперь введите дату и время для напоминания в формате: " +
+                "день-месяц-год, часы:минуты (например: 25-10-2025, 14:30) ⏰");
     }
 
 }

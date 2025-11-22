@@ -19,7 +19,7 @@ public class ListCommand implements CommandHandler{
     @Override
     public String handle(Update update){
         StringBuilder sb = new StringBuilder();
-        sb.append("Список доступных команд:\n\n");
+        sb.append("Список доступных команд:\n");
         for (CommandHandler command : allCommands){
             if(command instanceof StartCommand){
                 sb.append("/start - запустить бота\n");
@@ -28,7 +28,10 @@ public class ListCommand implements CommandHandler{
                 sb.append("/list - показать список всех команд\n");
             }
             else if(command instanceof AddCommand){
-                sb.append("/add - добавить важное событие для напоминания\n");
+                sb.append("/add - добавить напоминание\n");
+            }
+            else if(command instanceof ExportCalendar){
+                sb.append("/export_calendar - cгенерировать календарь\n");
             }
         }
         return sb.toString();
