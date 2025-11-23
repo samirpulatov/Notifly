@@ -1,5 +1,7 @@
 package org.notifly.services;
 
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
 import org.jetbrains.annotations.NotNull;
 import org.notifly.commands.*;
 import org.notifly.database.ReminderDAO;
@@ -11,6 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -125,17 +129,17 @@ public class CommandExecutor {
     }
 
     private void sendCalendar(Update update) {
-        String icsText = exportCalendarService.createIcsCalender(update.getMessage().getChatId());
-        Path filePath = Paths.get("week.ics");
+        Long chatId = update.getMessage().getChatId();
+        Calendar calendar = exportCalendarService.createIcsCalender(chatId);
+        String filePath = "mycalendar.ics";
+
         try {
-            Files.writeString(filePath, icsText);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
+            FileOutputStream fout =  new FileOutputStream(filePath);
+            CalendarOutputter outputter = new CalendarOutputter();
+            outputter.output(calendar, fout);
             SendDocument sendDocument = SendDocument.builder()
-                    .chatId(update.getMessage().getChatId())
-                    .document(new InputFile(filePath.toFile()))
+                    .chatId(chatId)
+                    .document(new InputFile(new File(filePath)))
                     .caption("Ваш календарь 📅")
                     .build();
 
