@@ -39,3 +39,7 @@ build/
 
 #Ignore bot config with secret token
 /src/main/resources/notifly.yaml
+
+#Generated and database
+*.ics
+*.db

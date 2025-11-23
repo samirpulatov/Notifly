@@ -61,7 +61,7 @@ public class ReminderDAO {
     }
 
     public List<Reminder> getReminders(LocalDate today,LocalDate tomorrow) {
-        String sql = "SELECT chat_id,date, description FROM reminders WHERE date = ? OR date = ?";
+        String sql = "SELECT chat_id,date,startTime,endTime, description FROM reminders WHERE date = ? OR date = ?";
         List<Reminder> reminders = new ArrayList<>();
 
         try (Connection connection = DatabaseManager.getConnection();
@@ -72,7 +72,9 @@ public class ReminderDAO {
             while(resultSet.next()) {
                 reminders.add(new Reminder(
                         resultSet.getLong("chat_id"),
-                        LocalDateTime.parse(resultSet.getString("date")),
+                        LocalDate.parse(resultSet.getString("date")),
+                        LocalTime.parse(resultSet.getString("startTime")),
+                        LocalTime.parse(resultSet.getString("endTime")),
                         resultSet.getString("description")
                 ));
 
@@ -84,27 +86,27 @@ public class ReminderDAO {
         return reminders;
     }
 
-    public List<Reminder> getAllReminders() {
-        String sql = "SELECT chat_id,date, description FROM reminders";
-        List<Reminder> reminders = new ArrayList<>();
-        try(Connection connection = DatabaseManager.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
-                reminders.add(new Reminder(
-                        resultSet.getLong("chat_id"),
-                        LocalDateTime.parse(resultSet.getString("date")),
-                        resultSet.getString("description")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return reminders;
-    }
+//    public List<Reminder> getAllReminders() {
+//        String sql = "SELECT chat_id,date, description FROM reminders";
+//        List<Reminder> reminders = new ArrayList<>();
+//        try(Connection connection = DatabaseManager.getConnection();
+//            PreparedStatement statement = connection.prepareStatement(sql)) {
+//            ResultSet resultSet = statement.executeQuery();
+//            while(resultSet.next()) {
+//                reminders.add(new Reminder(
+//                        resultSet.getLong("chat_id"),
+//                        LocalDateTime.parse(resultSet.getString("date")),
+//                        resultSet.getString("description")
+//                ));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return reminders;
+//    }
 
     public List<Reminder> getUserReminders(Long chatId) {
-        String sql = "SELECT chat_id,date, description FROM reminders WHERE chat_id = ?";
+        String sql = "SELECT chat_id,date,startTime, endTime, description FROM reminders WHERE chat_id = ?";
         List<Reminder> user_reminders = new ArrayList<>();
         try(Connection connection = DatabaseManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -113,7 +115,9 @@ public class ReminderDAO {
             while(resultSet.next()) {
                 user_reminders.add(new Reminder(
                         resultSet.getLong("chat_id"),
-                        LocalDateTime.parse(resultSet.getString("date")),
+                        LocalDate.parse(resultSet.getString("date")),
+                        LocalTime.parse(resultSet.getString("startTime")),
+                        LocalTime.parse(resultSet.getString("endTime")),
                         resultSet.getString("description")
                 ));
             }
@@ -123,30 +127,30 @@ public class ReminderDAO {
         return user_reminders;
     }
 
-    public List<Reminder> getRemindersBetween(Long chatId,LocalDate start,LocalDate end) {
-        String sql = "SELECT * FROM reminders WHERE chat_id = ? AND date >= ? AND date <= ?";
-        List<Reminder> reminders = new ArrayList<>();
-        try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setLong(1, chatId);
-            statement.setString(2, start.toString());
-            statement.setString(3, end.toString());
-
-            ResultSet rs = statement.executeQuery();
-
-            while (rs.next()) {
-                reminders.add(new Reminder(
-                        rs.getLong("chat_id"),
-                        LocalDateTime.parse(rs.getString("date")),
-                        rs.getString("description")
-                ));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return reminders;
-    }
+//    public List<Reminder> getRemindersBetween(Long chatId,LocalDate start,LocalDate end) {
+//        String sql = "SELECT * FROM reminders WHERE chat_id = ? AND date >= ? AND date <= ?";
+//        List<Reminder> reminders = new ArrayList<>();
+//        try (Connection connection = DatabaseManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(sql)) {
+//
+//            statement.setLong(1, chatId);
+//            statement.setString(2, start.toString());
+//            statement.setString(3, end.toString());
+//
+//            ResultSet rs = statement.executeQuery();
+//
+//            while (rs.next()) {
+//                reminders.add(new Reminder(
+//                        rs.getLong("chat_id"),
+//                        LocalDateTime.parse(rs.getString("date")),
+//                        rs.getString("description")
+//                ));
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return reminders;
+//    }
 }
