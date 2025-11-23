@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,16 +42,18 @@ public class ReminderDAO {
         }
     }
 
-    public void saveReminder(long chatId, LocalDateTime date, String description, String first_name, String last_name, String username) {
-        String sql = "INSERT INTO reminders(chat_id,date,description,first_name,last_name,username) VALUES(?,?,?,?,?,?)";
+    public void saveReminder(long chatId, LocalDate date, LocalTime startTime, LocalTime endTime, String description, String first_name, String last_name, String username) {
+        String sql = "INSERT INTO reminders(chat_id,date,startTime,endTime, description,first_name,last_name,username) VALUES(?,?,?,?,?,?,?,?)";
         try (Connection connection = DatabaseManager.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setLong(1,chatId);
             statement.setString(2,date.toString());
-            statement.setString(3,description);
-            statement.setString(4,first_name);
-            statement.setString(5,last_name);
-            statement.setString(6,username);
+            statement.setString(3,startTime.toString());
+            statement.setString(4,endTime.toString());
+            statement.setString(5,description);
+            statement.setString(6,first_name);
+            statement.setString(7,last_name);
+            statement.setString(8,username);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -66,21 +66,27 @@ public class CommandExecutor {
         }
 
         if(status.getStatus() == UserStatus.Status.AWAITING_DATE){
-            String dateText = update.getMessage().getText();
+            String dateText = update.getMessage().getText().trim();
+            String datePart = dateText.substring(0,dateText.indexOf(",")).trim();
+            String startTimePart = dateText.substring(dateText.indexOf(",")+1,dateText.indexOf("-")).trim();
+            String endTimePart = dateText.substring(dateText.indexOf("-")+1).trim();
+            System.out.println(datePart);
+            System.out.println(startTimePart);
+            System.out.println(endTimePart);
                 System.out.println(status.getStatus());
 
                 try {
-                    // Try to parse date entered by user
-//                    LocalDate date = LocalDate.parse(dateText, ofPattern("dd-MM-yyyy"));
-//                    LocalTime time = LocalTime.parse(dateText, ofPattern("HH:mm:ss"));
-//                    LocalDateTime dateTime = LocalDateTime.of(date, time);
-                    LocalDateTime dateTime  = LocalDateTime.parse(dateText, ofPattern("dd-MM-yyyy, HH:mm"));
+                    LocalDate date  = LocalDate.parse(datePart, ofPattern("dd/MM/yyyy"));
+                    status.setDate(date);
+                    LocalTime startTime = LocalTime.parse(startTimePart, ofPattern("HH:mm"));
+                    status.setStartTime(startTime);
+                    LocalTime endTime = LocalTime.parse(endTimePart, ofPattern("HH:mm"));
+                    status.setEndTime(endTime);
                     status.setStatus(UserStatus.Status.AWAITING_DESCRIPTION);
-                    message_text = "Дата сохранена: " + dateTime+"✅\nТеперь введите описание. Например: день рождения друга или '-' если описание не нужно.";
-                    status.setSavedDate(dateTime);
+                    message_text = "Дата сохранена: " + date+", "+startTime+"-"+endTime+"✅\nТеперь введите описание. Например: день рождения друга или '-' если описание не нужно.";
                 } catch (DateTimeException e) {
                     // Invalid date format
-                    message_text = "Неверный формат! Введите дату в формате dd-MM-yyyy, HH:mm";
+                    message_text = "Неверный формат! Введите дату в формате dd/MM/yyyy, HH:mm-HH:mm";
                 }
         }
 
@@ -97,13 +103,15 @@ public class CommandExecutor {
                 status.setOptionalDescription(descriptionText);
 
                 var chatId = update.getMessage().getChatId();
-                var date = status.getSavedDate();
+                var date = status.getDate();
+                var startTime = status.getStartTime();
+                var endTime = status.getEndTime();
                 var description = status.getOptionalDescription();
                 var first_name = update.getMessage().getFrom().getFirstName();
                 var last_name = update.getMessage().getFrom().getLastName();
                 var username =  update.getMessage().getFrom().getUserName();
 
-                reminderDAO.saveReminder(chatId, date, description,first_name,last_name,username);
+                reminderDAO.saveReminder(chatId, date,startTime,endTime, description,first_name,last_name,username);
 
                 status.setStatus(UserStatus.Status.NONE);
 

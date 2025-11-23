@@ -37,6 +37,8 @@ public class DatabaseManager {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     chat_id LONG,
                     date TEXT NOT NULL,
+                    startTime TEXT NOT NULL,
+                    endTime TEXT NOT NULL,
                     description TEXT,
                     first_name VARCHAR(20),
                     last_name VARCHAR(20),

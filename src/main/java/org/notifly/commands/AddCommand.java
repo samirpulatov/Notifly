@@ -4,7 +4,6 @@ import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.notifly.dto.UserStatus;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.util.Map;
 
