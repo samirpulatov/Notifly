@@ -23,8 +23,8 @@ public class AddCommand implements CommandHandler{
         users.get(chatId).setStatus(UserStatus.Status.AWAITING_DATE);
 
 
-        return EmojiParser.parseToUnicode("Отлично! Теперь введите дату и время для напоминания в формате: " +
-                "день-месяц-год, часы:минуты (например: 25-10-2025, 14:30) ⏰");
+        return EmojiParser.parseToUnicode("Отлично! Теперь введите дату и время для напоминания в следующем формате:\n" +
+                "день/месяц/год, время начала-время окончания (например: 25/11/2025, 15:00-16:00) ⏰\n");
     }
 
 }

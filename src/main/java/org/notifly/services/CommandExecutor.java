@@ -15,15 +15,9 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,6 +150,15 @@ public class CommandExecutor {
 
             sendMessage(update,"Ошибка при отправке файла");
         }
+
+        sendMessage(update,"Файл с вашим календарем 📅 успешно сгенерирован и отправлен!\n\n" +
+                "Чтобы добавить его в приложение Календарь:\n" +
+                "1. Сохраните файл на устройстве.\n" +
+                "2. Откройте приложение «Файлы» или «Мои документы».\n" +
+                "3. Найдите файл `mycalendar.ics`.\n" +
+                "4. Удерживайте файл одним пальцем, затем перетащите его в приложение Календарь.\n" +
+                "5. В календаре нажмите «Добавить» или «Сохранить».\n\n" +
+                "После этого все ваши события появятся в календаре 📅✅");
 
     }
 

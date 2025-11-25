@@ -3,6 +3,7 @@ package org.notifly;
 import org.notifly.commands.*;
 import org.notifly.config.ConfigLoader;
 import org.notifly.database.ReminderDAO;
+import org.notifly.services.MotivationScheduler;
 import org.notifly.services.ReminderScheduler;
 import org.notifly.services.UpdateDispatcher;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -29,6 +30,9 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
 
         ReminderScheduler reminderScheduler = new ReminderScheduler(reminderDAO, telegramClient);
         reminderScheduler.start();
+
+        MotivationScheduler  motivationScheduler = new MotivationScheduler(telegramClient);
+        motivationScheduler.start();
 
     }
 

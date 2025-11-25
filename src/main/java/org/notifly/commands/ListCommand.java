@@ -18,22 +18,28 @@ public class ListCommand implements CommandHandler{
 
     @Override
     public String handle(Update update){
+        Long chatId = update.getMessage().getChat().getId();
         StringBuilder sb = new StringBuilder();
-        sb.append("Список доступных команд:\n");
-        for (CommandHandler command : allCommands){
-            if(command instanceof StartCommand){
-                sb.append("/start - запустить бота\n");
-            }
-            else if (command instanceof ListCommand){
-                sb.append("/list - показать список всех команд\n");
-            }
-            else if(command instanceof AddCommand){
-                sb.append("/add - добавить напоминание\n");
-            }
-            else if(command instanceof ExportCalendar){
-                sb.append("/export_calendar - cгенерировать календарь\n");
+        sb.append("📋 *Список команд Notifly*\n\n");
+
+        for (CommandHandler command : allCommands) {
+            if (command instanceof StartCommand) {
+                sb.append("🟢 /start")
+                        .append(" — Запустить бота \n");
+            } else if (command instanceof ListCommand) {
+                sb.append("📄 /list")
+                        .append(" — Показать список всех команд \n");
+            } else if (command instanceof AddCommand) {
+                sb.append("➕ /add")
+                        .append(" — Добавить напоминание \n");
+            } else if (command instanceof ExportCalendar) {
+                sb.append("📅 /export_calendar")
+                        .append(" — Сгенерировать календарь \n");
             }
         }
+
+        sb.append("\n💡 Используйте команды, чтобы легко управлять своими напоминаниями!");
+
         return sb.toString();
     }
 }

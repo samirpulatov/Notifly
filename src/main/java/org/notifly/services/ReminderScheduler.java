@@ -28,6 +28,7 @@ public class ReminderScheduler {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
                 checkReminders();  // здесь TelegramApiException будет обработан
+                sendDailyMotivation();
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
@@ -54,5 +55,9 @@ public class ReminderScheduler {
                             .build()
             );
         }
+    }
+
+    private void sendDailyMotivation() throws TelegramApiException {
+
     }
 }

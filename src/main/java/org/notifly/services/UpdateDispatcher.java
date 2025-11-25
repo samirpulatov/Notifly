@@ -1,17 +1,7 @@
 package org.notifly.services;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.notifly.commands.AddCommand;
-import org.notifly.commands.CommandHandler;
-import org.notifly.commands.StartCommand;
-import org.notifly.dto.UserStatus;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-
-import java.util.Map;
 
 
 public class UpdateDispatcher {
