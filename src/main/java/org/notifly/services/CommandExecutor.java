@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.notifly.commands.*;
 import org.notifly.database.ReminderDAO;
 import org.notifly.dto.UserStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -26,7 +28,7 @@ import java.util.Map;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class CommandExecutor {
-
+    private final static Logger logger = LoggerFactory.getLogger(CommandExecutor.class);
     static NotiflyLogger notiflyLogger = new NotiflyLogger();
     static Map<Long, UserStatus> userStatus = new HashMap<>();
     static List<CommandHandler> commandHandlers = new ArrayList<>();
@@ -70,6 +72,7 @@ public class CommandExecutor {
                 System.out.println(status.getStatus());
 
                 try {
+                    logger.info("Parsing given date from a user");
                     LocalDate date  = LocalDate.parse(datePart, ofPattern("dd/MM/yyyy"));
                     status.setDate(date);
                     LocalTime startTime = LocalTime.parse(startTimePart, ofPattern("HH:mm"));
@@ -81,6 +84,7 @@ public class CommandExecutor {
                 } catch (DateTimeException e) {
                     // Invalid date format
                     message_text = "Неверный формат! Введите дату в формате dd/MM/yyyy, HH:mm-HH:mm";
+                    logger.error("Parsing of a given date failed {}",e);
                 }
         }
 
@@ -105,6 +109,7 @@ public class CommandExecutor {
                 var last_name = update.getMessage().getFrom().getLastName();
                 var username =  update.getMessage().getFrom().getUserName();
 
+                logger.info("New reminder from {} user saved",first_name);
                 reminderDAO.saveReminder(chatId, date,startTime,endTime, description,first_name,last_name,username);
 
                 status.setStatus(UserStatus.Status.NONE);
@@ -123,8 +128,10 @@ public class CommandExecutor {
         }
 
         if ((!message_text.equals("Календарь сгенерирован и отправлен ✅"))) {
+            logger.info("Sending a message: {}",message_text);
             sendMessage(update, message_text);
         } else {
+            logger.info("Sending a generated .ics file {}",message_text);
             sendCalendar(update);
         }
 
@@ -136,6 +143,8 @@ public class CommandExecutor {
         String filePath = "mycalendar.ics";
 
         try {
+
+            logger.info("Creating a document from a generated .ics file");
             FileOutputStream fout =  new FileOutputStream(filePath);
             CalendarOutputter outputter = new CalendarOutputter();
             outputter.output(calendar, fout);
@@ -147,7 +156,7 @@ public class CommandExecutor {
 
             telegramClient.execute(sendDocument);
         } catch (Exception e) {
-
+            logger.error("Failed to generate a .ics file");
             sendMessage(update,"Ошибка при отправке файла");
         }
 
@@ -171,10 +180,11 @@ public class CommandExecutor {
                 .build();
 
         try {
+            logger.info("Sending a message {}",message_text);
             // Send response back to user
             telegramClient.execute(message);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            logger.error("Sending a message failed ",e);
         }
     }
 }

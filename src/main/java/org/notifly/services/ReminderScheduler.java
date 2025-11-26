@@ -2,8 +2,11 @@ package org.notifly.services;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.notifly.Main;
 import org.notifly.database.ReminderDAO;
 import org.notifly.dto.Reminder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -18,19 +21,21 @@ import java.util.concurrent.TimeUnit;
 public class ReminderScheduler {
     private final ReminderDAO reminderDAO;
     private final TelegramClient telegramClient;
+    private final static Logger logger = LoggerFactory.getLogger(ReminderScheduler.class);
 
 
 
     @SneakyThrows
     public void start() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        System.out.println("Starting reminder scheduler");
+        logger.info("Starting reminder scheduler");
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
                 checkReminders();  // здесь TelegramApiException будет обработан
                 sendDailyMotivation();
+                logger.info("Motivation Message sent and reminders are checked");
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                logger.error("Motivation Message could not be sent or reminders of a user could not be checked",e);
             }
         }, 0, 1, TimeUnit.HOURS);
 
