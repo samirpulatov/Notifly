@@ -32,12 +32,11 @@ public class ReminderScheduler {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
                 checkReminders();  // здесь TelegramApiException будет обработан
-                sendDailyMotivation();
-                logger.info("Motivation Message sent and reminders are checked");
+                logger.info("Reminders are checked");
             } catch (TelegramApiException e) {
-                logger.error("Motivation Message could not be sent or reminders of a user could not be checked",e);
+                logger.error("Reminders of a user could not be checked",e);
             }
-        }, 0, 1, TimeUnit.HOURS);
+        }, 0, 1, TimeUnit.DAYS);
 
 
     }
@@ -50,7 +49,7 @@ public class ReminderScheduler {
         List<Reminder> reminders = reminderDAO.getReminders(today, tommorrow);
         for (Reminder reminder : reminders) {
             String message = reminder.getDate().equals(tommorrow)
-                    ? "\"\uD83D\uDCC5 Напоминанию Вам о следующем событии на завтра: \"" +reminder.getDescription()
+                    ? "\uD83D\uDCC5 Напоминанию Вам о следующем событии на завтра: " +reminder.getDescription()
                     : "Напоминанию Вам о следующем событии на сегодня: " + reminder.getDescription();
 
             telegramClient.execute(
@@ -60,9 +59,5 @@ public class ReminderScheduler {
                             .build()
             );
         }
-    }
-
-    private void sendDailyMotivation() throws TelegramApiException {
-
     }
 }
