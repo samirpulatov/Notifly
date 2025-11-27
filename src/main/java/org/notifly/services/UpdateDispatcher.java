@@ -26,6 +26,7 @@ public class UpdateDispatcher {
                 commandExecutor.execute(update.getMessage().getText(),update);
         } else {
             userService.saveUser(chatId,username,first_name,last_name);
+            commandExecutor.execute(update.getMessage().getText(),update);
             }
         }
     }
