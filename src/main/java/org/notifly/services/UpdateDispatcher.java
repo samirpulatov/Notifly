@@ -30,6 +30,7 @@ public class UpdateDispatcher {
         } else {
             userService.saveUser(chatId,username,first_name,last_name);
             logger.info("User {} successfully registered", first_name);
+            commandExecutor.execute(update.getMessage().getText(),update);
             }
         }
     }

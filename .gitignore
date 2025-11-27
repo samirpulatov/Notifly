@@ -43,3 +43,5 @@ build/
 #Generated and database
 *.ics
 *.db
+*.jar
+*.xml
