@@ -1,5 +1,7 @@
 package org.notifly.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -13,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MotivationScheduler {
     private final TelegramClient telegramClient;
+    private final static Logger logger = LoggerFactory.getLogger(MotivationScheduler.class);
 
     public  MotivationScheduler(TelegramClient telegramClient) {
         this.telegramClient = telegramClient;
@@ -26,8 +29,9 @@ public class MotivationScheduler {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
                 sendDailyMotivation();
+                logger.info("DailyMotivation scheduled");
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                logger.error("Failed to schedule dailyMotivation", e);
             }
         }, delay, period, TimeUnit.MILLISECONDS);
 
@@ -36,7 +40,7 @@ public class MotivationScheduler {
     private void sendDailyMotivation() throws TelegramApiException {
         Long nastyaId = 893239756L;
 
-        String greeting = "Доброе утро ☀, Анастасия! Желаю Вам всё так же хорошего и продуктивного дня. А сейчас хочу Вам сказать следующее:\n\n";
+        String greeting = GreetingGenerator.getGreetingForToday();
         String randomMessage = greeting+MotivationGenerator.getMessageForToday();
 
         // Build the outgoing message for Telegram/
@@ -49,10 +53,9 @@ public class MotivationScheduler {
         try {
             // Send response back to user
             telegramClient.execute(message);
-            System.out.println("motivation message sent");
+            logger.info("DailyMotivation sending to telegram {}",message);
         } catch (TelegramApiException e) {
-            System.out.println("motivation message failed");
-            e.printStackTrace();
+            logger.error("Failed to send dailyMotivation to telegram", e);
         }
     }
 

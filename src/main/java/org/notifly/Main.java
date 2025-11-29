@@ -14,7 +14,6 @@ public class Main {
     public static void main(String[] args) {
         final String botToken = ConfigLoader.getToken();
         logger.info("Starting Notifly Bot");
-
         try{
         TelegramBotsLongPollingApplication botsAplicacion = new TelegramBotsLongPollingApplication();
         botsAplicacion.registerBot(botToken, new NotiflyBot());

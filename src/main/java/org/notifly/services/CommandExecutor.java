@@ -63,15 +63,10 @@ public class CommandExecutor {
 
         if(status.getStatus() == UserStatus.Status.AWAITING_DATE){
             String dateText = update.getMessage().getText().trim();
-            String datePart = dateText.substring(0,dateText.indexOf(",")).trim();
-            String startTimePart = dateText.substring(dateText.indexOf(",")+1,dateText.indexOf("-")).trim();
-            String endTimePart = dateText.substring(dateText.indexOf("-")+1).trim();
-            System.out.println(datePart);
-            System.out.println(startTimePart);
-            System.out.println(endTimePart);
-                System.out.println(status.getStatus());
-
                 try {
+                    String datePart = dateText.substring(0,dateText.indexOf(",")).trim();
+                    String startTimePart = dateText.substring(dateText.indexOf(",")+1,dateText.indexOf("-")).trim();
+                    String endTimePart = dateText.substring(dateText.indexOf("-")+1).trim();
                     logger.info("Parsing given date from a user");
                     LocalDate date  = LocalDate.parse(datePart, ofPattern("dd/MM/yyyy"));
                     status.setDate(date);
@@ -81,10 +76,10 @@ public class CommandExecutor {
                     status.setEndTime(endTime);
                     status.setStatus(UserStatus.Status.AWAITING_DESCRIPTION);
                     message_text = "Дата сохранена: " + date+", "+startTime+"-"+endTime+"✅\nТеперь введите описание. Например: день рождения друга или '-' если описание не нужно.";
-                } catch (DateTimeException e) {
+                } catch (Exception e) {
                     // Invalid date format
                     message_text = "Неверный формат! Введите дату в формате dd/MM/yyyy, HH:mm-HH:mm";
-                    logger.error("Parsing of a given date failed {}",e);
+                    logger.error("Parsing of a given date failed",e);
                 }
         }
 
