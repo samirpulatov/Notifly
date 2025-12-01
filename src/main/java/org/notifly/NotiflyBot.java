@@ -3,10 +3,7 @@ package org.notifly;
 import org.notifly.commands.*;
 import org.notifly.config.ConfigLoader;
 import org.notifly.database.ReminderDAO;
-import org.notifly.services.MotivationScheduler;
-import org.notifly.services.ReminderScheduler;
-import org.notifly.services.TelegramMessageSender;
-import org.notifly.services.UpdateDispatcher;
+import org.notifly.services.*;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -18,18 +15,16 @@ import java.util.*;
 public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
 
     private final UpdateDispatcher updateDispatcher;
-    private final TelegramMessageSender telegramMessageSender;
 
 
     public NotiflyBot() {
         // Load token from YAML configuration
         // Telegram bot token loaded from config file
-//        String token = ConfigLoader.getToken();
+//      String token = ConfigLoader.getToken();
         String token = "8357719046:AAHFlr6fNnjMfJWCKMfVs66gWwSW-UvS420";
         // Telegram client used to send messages to users
         TelegramClient telegramClient = new OkHttpTelegramClient(token);
         this.updateDispatcher = new UpdateDispatcher(telegramClient);
-        this.telegramMessageSender = new TelegramMessageSender(telegramClient);
         ReminderDAO reminderDAO = new ReminderDAO();
 
         ReminderScheduler reminderScheduler = new ReminderScheduler(reminderDAO, telegramClient);
@@ -37,6 +32,9 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
 
         MotivationScheduler  motivationScheduler = new MotivationScheduler(telegramClient);
         motivationScheduler.start();
+
+        WeatherScheduler weatherScheduler = new WeatherScheduler(telegramClient);
+        weatherScheduler.start();
 
     }
 

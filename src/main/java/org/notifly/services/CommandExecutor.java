@@ -17,35 +17,21 @@ public class CommandExecutor {
     static List<CommandHandler> commandHandlers = new ArrayList<>();
 
 
-    private final TelegramMessageSender telegramMessageSender;
     private final ReminderService reminderService;
 
     public CommandExecutor(TelegramClient telegramClient) {
-        this.telegramMessageSender = new TelegramMessageSender(telegramClient);
+        TelegramMessageSender telegramMessageSender = new TelegramMessageSender(telegramClient);
         this.reminderService = new ReminderService(telegramClient);
-
-
 
         commandHandlers.add(new StartCommand(telegramMessageSender));
         commandHandlers.add(new AddCommand(telegramMessageSender, reminderService));
         commandHandlers.add(new ExportCalendar(telegramMessageSender));
-        commandHandlers.add(new ListCommand(commandHandlers,telegramMessageSender));
+        commandHandlers.add(new ListCommand(commandHandlers, telegramMessageSender));
     }
 
 
-
-
-//    static {
-//
-//        commandHandlers.add(new StartCommand());
-//        commandHandlers.add(new AddCommand());
-//        commandHandlers.add(new ExportCalendar());
-//        commandHandlers.add(new ListCommand(commandHandlers));
-//
-//
-//    }
-
     public void execute(String message_text, @NotNull Update update){
+        logger.info("Executing command: " + message_text);
         Long chatId = update.getMessage().getChatId();
         // Loop through all command handlers and find one that can handle this command
         if(message_text.startsWith("/")) {
@@ -56,6 +42,7 @@ public class CommandExecutor {
                 }
             }
         } else {
+            logger.info("Parsing message: " + message_text);
             processMessageForReminder(chatId,update);
         }
     }

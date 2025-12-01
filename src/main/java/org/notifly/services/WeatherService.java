@@ -3,6 +3,8 @@ package org.notifly.services;
 import org.json.JSONObject;
 import org.notifly.config.ConfigLoader;
 import org.notifly.dto.WeatherInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +14,7 @@ import java.net.http.HttpResponse;
 
 public class WeatherService {
 
+    private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
     private final String weatherApi;
     public WeatherService(){
         this.weatherApi = ConfigLoader.getWeatherAPI();
@@ -29,10 +32,17 @@ public class WeatherService {
 
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            if(response.statusCode() != 200){
+                logger.error("Weather API error " + response.statusCode());
+                return null;
+            }
+
             JSONObject json = new JSONObject(response.body());
 
             WeatherInfo info = new WeatherInfo();
             info.temp = json.getJSONObject("main").getDouble("temp");
+            info.temp_min = json.getJSONObject("main").getDouble("temp_min");
+            info.temp_max = json.getJSONObject("main").getDouble("temp_max");
             info.feelsLike = json.getJSONObject("main").getDouble("feels_like");
             info.humidity = json.getJSONObject("main").getInt("humidity");
             info.wind = json.getJSONObject("wind").getDouble("speed");
@@ -41,7 +51,7 @@ public class WeatherService {
             return info;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while sending weather request" + e.getMessage());
             return null;
         }
     }

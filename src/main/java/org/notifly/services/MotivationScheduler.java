@@ -41,7 +41,8 @@ public class MotivationScheduler {
         Long nastyaId = 893239756L;
 
         String greeting = GreetingGenerator.getGreetingForToday();
-        String randomMessage = greeting+MotivationGenerator.getMessageForToday();
+        String randomMessage = greeting+MotivationGenerator.getMessageForToday()+".\n\nЧуть не забыл! Спустя 5 минут, проанализировав прогноз погоды на " +
+                "сегодняшнее утро, я дам Вам свои рекомендации \uD83C\uDF1D";
 
         // Build the outgoing message for Telegram/
         SendMessage message = SendMessage
