@@ -41,4 +41,9 @@ public class ConfigLoader {
         // Return the "token" value
         return (String) botConfig.get("token");
     }
+
+    public static String getWeatherAPI() {
+        Map<String,Object> botConfig = (Map<String, Object>) config.get("notifly");
+        return (String) botConfig.get("weatherApi");
+    }
 }
