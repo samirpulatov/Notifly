@@ -24,7 +24,8 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
     public NotiflyBot() {
         // Load token from YAML configuration
         // Telegram bot token loaded from config file
-        String token = ConfigLoader.getToken();
+//        String token = ConfigLoader.getToken();
+        String token = "8357719046:AAHFlr6fNnjMfJWCKMfVs66gWwSW-UvS420";
         // Telegram client used to send messages to users
         TelegramClient telegramClient = new OkHttpTelegramClient(token);
         this.updateDispatcher = new UpdateDispatcher(telegramClient);
