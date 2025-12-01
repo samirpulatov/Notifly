@@ -3,8 +3,7 @@ package org.notifly.entities;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import org.notifly.dto.UserStatus;
+import org.notifly.dto.UserSession;
 
 @Getter
 @Setter
@@ -15,5 +14,5 @@ public class User {
     private String firstName;
     private String lastName;
     private Long chatId;
-    private UserStatus userStatus;
+    private UserSession userSession;
 }

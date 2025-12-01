@@ -1,5 +1,6 @@
 package org.notifly.services;
 
+import org.notifly.dto.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -10,10 +11,12 @@ public class UpdateDispatcher {
     private final UserService userService;
     private final CommandExecutor commandExecutor;
     private final static Logger logger = LoggerFactory.getLogger(UpdateDispatcher.class);
+    private final UserStateService userStateService;
 
     public UpdateDispatcher(TelegramClient telegramClient) {
         this.userService = new UserService();
         this.commandExecutor = new CommandExecutor(telegramClient);
+        this.userStateService = new UserStateService();
     }
 
 
@@ -26,10 +29,13 @@ public class UpdateDispatcher {
             Long chatId = update.getMessage().getChatId();
             if (userService.userExists(chatId)){
                 logger.info("User {} requested execution of {} command",first_name, update.getMessage().getText());
+                userStateService.getUsers_status().put(chatId, new UserSession());
+                userStateService.updateUserStatus(chatId, UserSession.Status.NONE);
                 commandExecutor.execute(update.getMessage().getText(),update);
         } else {
             userService.saveUser(chatId,username,first_name,last_name);
             logger.info("User {} successfully registered", first_name);
+            userStateService.updateUserStatus(chatId, UserSession.Status.NONE);
             commandExecutor.execute(update.getMessage().getText(),update);
             }
         }

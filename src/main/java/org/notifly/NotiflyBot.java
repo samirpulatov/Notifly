@@ -5,6 +5,7 @@ import org.notifly.config.ConfigLoader;
 import org.notifly.database.ReminderDAO;
 import org.notifly.services.MotivationScheduler;
 import org.notifly.services.ReminderScheduler;
+import org.notifly.services.TelegramMessageSender;
 import org.notifly.services.UpdateDispatcher;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
@@ -17,6 +18,7 @@ import java.util.*;
 public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
 
     private final UpdateDispatcher updateDispatcher;
+    private final TelegramMessageSender telegramMessageSender;
 
 
     public NotiflyBot() {
@@ -26,6 +28,7 @@ public class NotiflyBot implements LongPollingSingleThreadUpdateConsumer {
         // Telegram client used to send messages to users
         TelegramClient telegramClient = new OkHttpTelegramClient(token);
         this.updateDispatcher = new UpdateDispatcher(telegramClient);
+        this.telegramMessageSender = new TelegramMessageSender(telegramClient);
         ReminderDAO reminderDAO = new ReminderDAO();
 
         ReminderScheduler reminderScheduler = new ReminderScheduler(reminderDAO, telegramClient);

@@ -4,5 +4,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface CommandHandler {
     boolean canHandle(String command); // check if bot can handle such command
-    String handle(Update update); // returns an answer
+
+    void response (Update update); // returns an answer
+
+    void execute(Update update, String message);
 }

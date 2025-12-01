@@ -1,14 +1,17 @@
 package org.notifly.commands;
 
+import org.notifly.services.TelegramMessageSender;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
 public class ListCommand implements CommandHandler{
     private final List<CommandHandler> allCommands;
-
-    public ListCommand(List<CommandHandler> allCommands) {
+    private final TelegramMessageSender telegramMessageSender;
+    public ListCommand(List<CommandHandler> allCommands, TelegramMessageSender telegramMessageSender) {
         this.allCommands = allCommands;
+        this.telegramMessageSender = telegramMessageSender;
+
     }
 
     @Override
@@ -17,7 +20,7 @@ public class ListCommand implements CommandHandler{
     }
 
     @Override
-    public String handle(Update update){
+    public void response(Update update){
         Long chatId = update.getMessage().getChat().getId();
         StringBuilder sb = new StringBuilder();
         sb.append("📋 *Список команд Notifly*\n\n");
@@ -39,7 +42,12 @@ public class ListCommand implements CommandHandler{
         }
 
         sb.append("\n💡 Используйте команды, чтобы легко управлять своими напоминаниями!");
+        this.execute(update,sb.toString());
 
-        return sb.toString();
+    }
+
+    @Override
+    public void execute(Update update, String message) {
+        telegramMessageSender.sendMessage(update,message);
     }
 }
