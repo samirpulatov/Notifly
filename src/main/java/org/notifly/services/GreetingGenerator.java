@@ -1,5 +1,7 @@
 package org.notifly.services;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,8 +18,8 @@ public class GreetingGenerator {
     );
 
     public static String getGreetingForToday(){
-        Random rand = new Random();
-        return greetings.get(rand.nextInt(greetings.size()));
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        return greetings.get(today.getValue() -1);
     }
 
 

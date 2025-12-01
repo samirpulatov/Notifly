@@ -1,5 +1,7 @@
 package org.notifly.services;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -16,8 +18,8 @@ public class MotivationGenerator {
     );
 
     public static String getMessageForToday(){
-        Random random = new Random();
-        return messages.get(random.nextInt(messages.size()));
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        return messages.get(today.getValue() - 1);
     }
 
 }
